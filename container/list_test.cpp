@@ -234,6 +234,7 @@ std::ostream& operator<<(std::ostream& os, const List<L>& pt)  // 原代码多�
     return os;
 }
 
+
 // main函数放在全局作用域
 int main() {
     List<int> myList;

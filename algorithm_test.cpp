@@ -69,8 +69,97 @@ int main() {
 
 
 
+/*
+9/24
+ */
 
+//哨兵节点无需考虑头结点的情况
+struct ListNode {
+      int val;
+      ListNode *next;
+      ListNode() : val(0), next(nullptr) {}
+      ListNode(int x) : val(x), next(nullptr) {}
+      ListNode(int x, ListNode *next) : val(x), next(next) {}
+ };
+class Solution {
+public:
+    ListNode* removeElements(ListNode* head, int val) {
+        //处理极端情况
+        if(!head) return head;
+        ListNode* dummy = new ListNode(0, head);
+        ListNode* prev = dummy;
+        ListNode* cur = head;
 
+        while(cur)
+        {
+            if(cur->val == val)
+            {
+                //说明此时需要删除
+                prev->next = cur->next;
+                delete cur;
+                cur = prev->next;
+            }
+            else
+            {
+                prev = prev->next;
+                cur = cur->next;
+            }
+        }
+        //哨兵节点的真正作用在于记录头结点，从而无需单独考虑删除头结点的情况
+        ListNode* result = dummy->next;
+        delete dummy;
 
+        return result;
+    }
+};
+//无哨兵节点需要考虑头结点
+class Solution {
+public:
+    ListNode* removeElements(ListNode* head, int val) {
+
+        //删除头结点
+        while(head != nullptr && head->val == val)
+        {
+            ListNode* temp = head;
+            head = head->next;
+            delete temp;
+        }
+        ListNode* cur = head;
+        //非头结点
+        while(cur != nullptr && cur->next != nullptr)
+        {
+            if(cur->next->val == val)
+            {
+                ListNode* temp = cur->next;
+                cur->next = cur->next->next;
+                delete temp;
+            }
+            else
+            {
+                cur = cur->next;
+            }
+        }
+        return head;
+    }
+};
+//递归删除的策略
+class Solution {
+public:
+    ListNode* removeElements(ListNode* head, int val) {
+        if(!head) return nullptr;
+
+        if(head->val == val)
+        {
+            ListNode* newNode =  removeElements(head->next, val);
+            delete head;
+            return newNode;
+        }
+        else
+        {
+            head->next = removeElements(head->next, val);
+            return head;
+        }
+    }
+};
 
 
