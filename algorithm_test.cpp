@@ -192,87 +192,87 @@ int main() {
 //     }
 //     std::cout << std::endl;
 // }
-class MyLinkedList {
-public:
-    struct LinkedNode{
-        int val;
-        LinkedNode* next;
-        LinkedNode(int val): val(val), next(nullptr){}
-    };
-    //初始化链表
-    MyLinkedList() {
-        //需要一个哨兵节点
-        dummy = new LinkedNode(0);
-        size = 0;
-    }
+// class MyLinkedList {
+// public:
+//     struct LinkedNode{
+//         int val;
+//         LinkedNode* next;
+//         LinkedNode(int val): val(val), next(nullptr){}
+//     };
+//     //初始化链表
+//     MyLinkedList() {
+//         //需要一个哨兵节点
+//         dummy = new LinkedNode(0);
+//         size = 0;
+//     }
     
-    int get(int index) {
-        if(index < 0 || index >= size)
-        {
-            return -1;
-        }
-        //拿到头结点
-        LinkedNode* cur = dummy->next;
-        while(index--)
-        {
-            cur = cur->next;
-        }
-        return cur->val;
-    }
+//     int get(int index) {
+//         if(index < 0 || index >= size)
+//         {
+//             return -1;
+//         }
+//         //拿到头结点
+//         LinkedNode* cur = dummy->next;
+//         while(index--)
+//         {
+//             cur = cur->next;
+//         }
+//         return cur->val;
+//     }
     
-    void addAtHead(int val) {
-        //头插法
-        LinkedNode* newNode = new LinkedNode(val);
-        newNode->next = dummy->next;
-        dummy->next = newNode;
-        ++size;
-    }
+//     void addAtHead(int val) {
+//         //头插法
+//         LinkedNode* newNode = new LinkedNode(val);
+//         newNode->next = dummy->next;
+//         dummy->next = newNode;
+//         ++size;
+//     }
     
-    void addAtTail(int val) {
-        //尾插法
-        LinkedNode* newNode = new LinkedNode(val);
-        LinkedNode* cur = dummy;//有可能为空链表
-        while(cur->next)
-        {
-            cur = cur->next;
-        }
-        cur->next = newNode;
-        ++size;        
-    }
+//     void addAtTail(int val) {
+//         //尾插法
+//         LinkedNode* newNode = new LinkedNode(val);
+//         LinkedNode* cur = dummy;//有可能为空链表
+//         while(cur->next)
+//         {
+//             cur = cur->next;
+//         }
+//         cur->next = newNode;
+//         ++size;        
+//     }
     
-    void addAtIndex(int index, int val) {
-        if(index > size) return;
-        if(index < 0) index = 0;
-        LinkedNode* newNode = new LinkedNode(val);
-        LinkedNode* cur = dummy;
-        while(index--)
-        {
-            cur = cur->next;
-        }
-        newNode->next = cur->next;
-        cur->next = newNode;
-        ++size;
-    }
+//     void addAtIndex(int index, int val) {
+//         if(index > size) return;
+//         if(index < 0) index = 0;
+//         LinkedNode* newNode = new LinkedNode(val);
+//         LinkedNode* cur = dummy;
+//         while(index--)
+//         {
+//             cur = cur->next;
+//         }
+//         newNode->next = cur->next;
+//         cur->next = newNode;
+//         ++size;
+//     }
     
-    void deleteAtIndex(int index) {
-        if(index < 0 || index >= size) return;
-        //任意位置删除
-        LinkedNode* cur = dummy;
-        while(index--)
-        {
-            cur = cur->next;
-        }
-        //此时 cur 走到了待删除节点的前一个位置，需要记录待删除节点的下一个位置
-        LinkedNode* tmp = cur->next;
-        cur->next = tmp->next;
-        delete tmp;
-        tmp = nullptr;
-        --size;
-    }
-private:
-    LinkedNode* dummy;
-    size_t size; 
-};
+//     void deleteAtIndex(int index) {
+//         if(index < 0 || index >= size) return;
+//         //任意位置删除
+//         LinkedNode* cur = dummy;
+//         while(index--)
+//         {
+//             cur = cur->next;
+//         }
+//         //此时 cur 走到了待删除节点的前一个位置，需要记录待删除节点的下一个位置
+//         LinkedNode* tmp = cur->next;
+//         cur->next = tmp->next;
+//         delete tmp;
+//         tmp = nullptr;
+//         --size;
+//     }
+// private:
+//     LinkedNode* dummy;
+//     size_t size; 
+// };
 
 /**
  * Your MyLinkedList object will be instantiated and called as such:
@@ -283,3 +283,36 @@ private:
  * obj->addAtIndex(index,val);
  * obj->deleteAtIndex(index);
  */
+
+
+//反转链表的三种做法
+//双指法
+struct ListNode {
+    int val;
+     ListNode *next;
+     ListNode() : val(0), next(nullptr) {}
+     ListNode(int x) : val(x), next(nullptr) {}
+     ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        if(!head || !head->next) return head;
+        //先把两个节点的情况搞定
+        ListNode* cur = head->next;
+        ListNode* prev = head;
+        ListNode* tmp = cur->next;
+        prev->next = nullptr;
+        cur->next = prev;
+        while(tmp)
+        {
+            prev = cur;
+            cur = tmp;
+            tmp = cur->next;
+            cur->next = prev;
+        }
+        return cur;
+    }
+};
+//模拟双指针的递归法
+

@@ -70,7 +70,7 @@ public:
     // 插入键值对到哈希表中
     void insert(const Key& key, const Value& value)
     {
-        // 检查是否需要重哈希???为什么要 + 1
+        // 检查是否需要重哈希
         if ((numElements + 1) > maxLoadFactor * tableSize)
         {
             // 处理 clear 后再次插入元素时 tableSize = 0 的情况
