@@ -81,7 +81,89 @@ class RedBackTree
         // 更新当前节点的父节点为左子节点
         node->parent = l_son;
     }
+        // 左旋函数
+    // 是右旋的对称情况，逻辑和右旋是一样的
+    void rightRotate(Node *node)
+    {
+        Node *r_son = node->right;
 
+        node->left = l_son->right;
+
+        if (r_son->left)
+        {
+            r_son->left->parent = node;
+        }
+        
+        r_son->parent = node->parent;
+        if(!node->parent)
+        {
+            root = r_son;
+        }
+        else if (node == node->parent->left)
+        {
+            node->parent->left = r_son;
+        }else
+        {
+            node->parent->right = r_son;
+        }
+
+        r_son->left = node;
+        node->parent = r_son;
+    }
+    //插入节点
+    void insertNode(const Key &key)
+    {
+        //创建一个新节点，节点的颜色初始化为红色
+        Node *newNode = new Node(key, Color:: RED);
+        Node *parent = nullptr;
+        Node *cmpNode = root;
+
+        // 遍历树，找到新节点的正确位置
+        while (cmpNode)
+        {
+            parent = cmpNode;// 保留当前节点作为新节点的潜在父节点
+            // 如果新节点的键小于当前比较节点的键，则向左子树移动
+            if(newNode->key < cmpNode->key)
+            {
+                cmpNode = cmpNode->left;
+                // 如果新节点的键大于当前比较节点的键，则向右子树移动
+            }
+            else if (newNode->key > cmpNode->key)
+            {
+                cmpNode = cmpNode->right;
+                // 如果键相等，则说明树中已有相同键的节点，删除新节点并返回
+            }
+            else
+            {
+                delete newNode;
+                return;
+            }
+        }
+
+        // 树的大小增加
+        size++;
+
+        // 将新节点的父节点设置为找到的父节点位置
+        newNode->parent = parent;
+        // 如果父节点为空说明树是空的，新节点成为根节点
+
+        if(!parent)
+        {
+            root = newNode;
+            // 如果新节点的键小于父节点的键，将新节点插入父节点的左子树
+        }
+        else if(newNode->key < parent->key)
+        {
+            parent->right = newNode;
+            // 否则，将新节点插入父节点的右子树
+        }
+        else
+        {
+            parent->right = newNode;
+        }
+        // 插入新节点后，调用 insertFixup 函数来修复可能破坏的红黑树的性质
+        insertFixup(newNode);
+    }
 
 
 

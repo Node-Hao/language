@@ -285,8 +285,8 @@ int main() {
  */
 
 
-//反转链表的三种做法
-//双指法
+// //反转链表的三种做法
+// //双指法
 struct ListNode {
     int val;
      ListNode *next;
@@ -294,25 +294,89 @@ struct ListNode {
      ListNode(int x) : val(x), next(nullptr) {}
      ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
+// class Solution {
+// public:
+//     ListNode* reverseList(ListNode* head) {
+//         if(!head || !head->next) return head;
+//         //先把两个节点的情况搞定
+//         ListNode* cur = head->next;
+//         ListNode* prev = head;
+//         ListNode* tmp = cur->next;
+//         prev->next = nullptr;
+//         cur->next = prev;
+//         while(tmp)
+//         {
+//             prev = cur;
+//             cur = tmp;
+//             tmp = cur->next;
+//             cur->next = prev;
+//         }
+//         return cur;
+//     }
+// };
+//模拟双指针的递归法
+//从后往前的递归法
 class Solution {
 public:
     ListNode* reverseList(ListNode* head) {
         if(!head || !head->next) return head;
-        //先把两个节点的情况搞定
-        ListNode* cur = head->next;
-        ListNode* prev = head;
-        ListNode* tmp = cur->next;
-        prev->next = nullptr;
-        cur->next = prev;
-        while(tmp)
-        {
-            prev = cur;
-            cur = tmp;
-            tmp = cur->next;
-            cur->next = prev;
-        }
-        return cur;
+
+        //只用操心当前节点的事，剩余节点交给后面的人做
+        ListNode* last = reverseList(head->next);
+        //last 记录后一个节点
+        head->next->next = head;
+        head->next = nullptr;
+        return last;
     }
 };
 //模拟双指针的递归法
+class Solution {
+public:
+    ListNode* reverse(ListNode* pre,ListNode* cur){
+        if(cur == NULL) return pre;
+        ListNode* temp = cur->next;
+        cur->next = pre;
+        // 可以和双指针法的代码进行对比，如下递归的写法，其实就是做了这两步
+        // pre = cur;
+        // cur = temp;
+        return reverse(cur,temp);
+    }
+    ListNode* reverseList(ListNode* head) {
+        // 和双指针法初始化是一样的逻辑
+        // ListNode* cur = head;
+        // ListNode* pre = NULL;
+        return reverse(NULL, head);
+    }
+};
+
+
+
+//两两交换链表节点
+class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+        //涉及到对虚拟头结点的深刻理解
+        //1.无需考虑临界情况 2.无需额外记录头结点
+        ListNode* dummy = new ListNode(0);
+        dummy->next = head;
+        ListNode* prev = dummy;
+        //保证始终有两组可以交换
+        while(prev->next && prev->next->next)
+        {
+            //记录交换节点
+            ListNode* first = prev->next;
+            ListNode* second = prev->next->next;
+            //开始交换
+            first->next = second->next;
+            second->next = first;
+            prev->next = second;
+            //走到下一组节点之前
+            prev = first;
+        }
+        ListNode* result = dummy->next;
+        delete dummy;
+        return result;
+    }
+};
+
 
