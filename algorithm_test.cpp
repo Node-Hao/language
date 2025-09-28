@@ -316,67 +316,95 @@ struct ListNode {
 // };
 //模拟双指针的递归法
 //从后往前的递归法
+// class Solution {
+// public:
+//     ListNode* reverseList(ListNode* head) {
+//         if(!head || !head->next) return head;
+
+//         //只用操心当前节点的事，剩余节点交给后面的人做
+//         ListNode* last = reverseList(head->next);
+//         //last 记录后一个节点
+//         head->next->next = head;
+//         head->next = nullptr;
+//         return last;
+//     }
+// };
+// //模拟双指针的递归法
+// class Solution {
+// public:
+//     ListNode* reverse(ListNode* pre,ListNode* cur){
+//         if(cur == NULL) return pre;
+//         ListNode* temp = cur->next;
+//         cur->next = pre;
+//         // 可以和双指针法的代码进行对比，如下递归的写法，其实就是做了这两步
+//         // pre = cur;
+//         // cur = temp;
+//         return reverse(cur,temp);
+//     }
+//     ListNode* reverseList(ListNode* head) {
+//         // 和双指针法初始化是一样的逻辑
+//         // ListNode* cur = head;
+//         // ListNode* pre = NULL;
+//         return reverse(NULL, head);
+//     }
+// };
+
+
+
+// //两两交换链表节点
+// class Solution {
+// public:
+//     ListNode* swapPairs(ListNode* head) {
+//         //涉及到对虚拟头结点的深刻理解
+//         //1.无需考虑临界情况 2.无需额外记录头结点
+//         ListNode* dummy = new ListNode(0);
+//         dummy->next = head;
+//         ListNode* prev = dummy;
+//         //保证始终有两组可以交换
+//         while(prev->next && prev->next->next)
+//         {
+//             //记录交换节点
+//             ListNode* first = prev->next;
+//             ListNode* second = prev->next->next;
+//             //开始交换
+//             first->next = second->next;
+//             second->next = first;
+//             prev->next = second;
+//             //走到下一组节点之前
+//             prev = first;
+//         }
+//         ListNode* result = dummy->next;
+//         delete dummy;
+//         return result;
+//     }
+// };
+
+//删除倒数第 N 个节点
 class Solution {
 public:
-    ListNode* reverseList(ListNode* head) {
-        if(!head || !head->next) return head;
-
-        //只用操心当前节点的事，剩余节点交给后面的人做
-        ListNode* last = reverseList(head->next);
-        //last 记录后一个节点
-        head->next->next = head;
-        head->next = nullptr;
-        return last;
-    }
-};
-//模拟双指针的递归法
-class Solution {
-public:
-    ListNode* reverse(ListNode* pre,ListNode* cur){
-        if(cur == NULL) return pre;
-        ListNode* temp = cur->next;
-        cur->next = pre;
-        // 可以和双指针法的代码进行对比，如下递归的写法，其实就是做了这两步
-        // pre = cur;
-        // cur = temp;
-        return reverse(cur,temp);
-    }
-    ListNode* reverseList(ListNode* head) {
-        // 和双指针法初始化是一样的逻辑
-        // ListNode* cur = head;
-        // ListNode* pre = NULL;
-        return reverse(NULL, head);
-    }
-};
-
-
-
-//两两交换链表节点
-class Solution {
-public:
-    ListNode* swapPairs(ListNode* head) {
-        //涉及到对虚拟头结点的深刻理解
-        //1.无需考虑临界情况 2.无需额外记录头结点
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        if(!n) return head;
+        ListNode* fast = head;
+        ListNode* slow = head;
         ListNode* dummy = new ListNode(0);
-        dummy->next = head;
+        dummy->next = head;//无需考虑特殊情况
         ListNode* prev = dummy;
-        //保证始终有两组可以交换
-        while(prev->next && prev->next->next)
+        while (n - 1)// 让前一个指针走 n - 1步
         {
-            //记录交换节点
-            ListNode* first = prev->next;
-            ListNode* second = prev->next->next;
-            //开始交换
-            first->next = second->next;
-            second->next = first;
-            prev->next = second;
-            //走到下一组节点之前
-            prev = first;
+            fast = fast->next;
+            --n;
         }
-        ListNode* result = dummy->next;
-        delete dummy;
-        return result;
+        while (fast->next)// 每个点都走到对的位置
+        {
+            prev = slow;
+            fast = fast->next;
+            slow = slow->next;
+        }
+        // 删除 slow 节点
+        prev->next = slow->next;
+        return dummy->next;
     }
 };
-
+// 首先要意识到如何找到链表的倒数第N个节点和前一个节点
+// 我的想法在于用前后指针之间的差距，当前指针到末尾时，之间的差距为 n - 1，那么后指针就在倒数第n个节点的位置，想要删除该节点还得有一个记录该节点前一项的指针
 
