@@ -259,9 +259,239 @@ class RedBackTree
     // removeFixup 函数用于在删除节点后恢复红黑树的性质
     void removeFixup(Node *node)
     {
+        // 如果节点为 Nil 且没有父节点，说明他是唯一的节点，直接返回
+        if (node == Nil && node->parent == nullptr)
+        {
+            return;
+        }
 
+        // 当我们没有到达根节点时继续循环
+        while (node != root)
+        {
+            // 如果节点是其父节点的左子结点
+            if (node == node->parent->left)
+            {
+                // 兄弟节点是节点父亲的右子节点
+                Node *sibling = node->parent->right;
+
+                // 情况1：节点的兄弟节点是红色
+                if (getColor(sibling) == Color::RED)
+                {
+                    // 重新着色兄弟节点和父节点，并进行左旋
+                    setColor(sibling, Color::BLACK);
+                    setColor(node->parent, Color::RED);
+                    leftRotate(node->parent);
+                    // 旋转后更新兄弟节点
+                    sibling = node->parent->right;
+                }
+
+                // 情况2：兄弟节点的两个子节点都是黑色
+                if (getColor(sibling->left) == Color::BLACK &&
+                    getColor(sibling->right) == Color::BLACK)
+                {
+                    //重新着色兄弟节点并向上移动
+                    setColor(sibling, Color::RED);
+                    node = node->parent;
+                    // 如果父节点是红色，将其改为黑色并结束
+                    if (node->color == Color::RED)
+                    {
+                        node->color = Color::BLACK;
+                        node = root;
+                    }
+                }
+                else
+                {
+                    // 情况3：兄弟节点的右子节点是黑色（左子节点是红色）
+                    if (getColor(sibling->right) == Color::BLACK)
+                    {
+                        //重新着色兄弟节点和兄弟节点的左子节点，并进行右旋
+                        setColor(sibling->left, Color::BLACK);
+                        setColor(sibling, Color::RED);
+                        rightRotate(sibling);
+                        // 旋转后更新兄弟节点
+                        sibling = node->parent->right;
+                    }
+                    // 情况4：兄弟节点的右子节点是红色
+                    setColor(sibling, getColor(node->parent));
+                    setColor(node->parent, Color::BLACK);
+                    setColor(sibling->right, Color::BLACK);
+                    // 移动到根节点结束
+                    node = root;
+                }
+            }
+            else
+            {
+                // 当节点是其父节点的右子节点时，对称的情况
+                Node *sibling = node->parent->left;
+
+                if (getColor(sibling) == Color::RED)
+                {
+                    setColor(sibling, Color::BLACK);
+                    setColor(node->parent, Color::RED);
+                    rightRotate(node->parent);
+                    sibling = node->parent->left;
+                }
+
+                if (getColor(sibling->right) == Color::BLACK &&
+                    getColor(sibling->left) == Color::BLACK)
+                {
+                    setColor(sibling, Color::RED);
+                    node = node->parent;
+                    if (node->color == Color::RED)
+                    {
+                        node->color = Color::BLACK;
+                        node = root;
+                    }
+                }
+                else
+                {
+                    if (getColor(sibling->left) == Color::BLACK)
+                    {
+                        setColor(sibling->right, Color::BLACK);
+                        setColor(sibling, Color::RED);
+                        leftRotate(sibling);
+                        sibling = node->parent->left;
+                    }
+                    setColor(sibling, getColor(node->parent));
+                    setColor(node->parent, Color::BLACK);
+                    setColor(sibling->left, Color::BLACK);
+                    rightRotate(node->parent);
+                    node = root;
+                }
+            }
+        }
+        // 确保当前节点是黑色的，以维持红黑树的性质
+        setColor(node, Color::BLACK);
     }
-    // 获取颜色，空指针为黑色
+
+    // 删除节点
+    void deleteNode (Node *del)
+    {
+        Node *rep = del; // rep (替代节点) 初始指向要删除的节点
+        Node *child = nullptr; // 要删除节点的孩子节点
+        Node *parentRP;// 替代节点的父节点
+        Color origCol = rep->color; // 保存要删除节点的原始颜色
+
+        // 如果删除节点没有左孩子
+        if (!del->left)
+        {
+            rep = del->right; // 替代节点指向删除节点的右孩子
+            parentRP = del->parent; // 更新替代节点的父节点
+            origCol = getColor(rep); // 获取替代节点的颜色
+            replaceNode(del, rep); // 用替代节点替换删除节点
+        }// 如果删除节点没有右孩子
+        else if (!del->right)
+        {
+            rep = del->left; // 替代节点指向删除节点的左孩子
+            parentRP = del->parent; // 更新替代节点的父节点
+            origCol = getColor(rep); // 获取替代节点的颜色
+            replaceNode(del, rep); // 用替代节点替换删除节点
+        }
+        else // 如果删除节点有两个孩子
+        {
+            rep = findMinimumNode(del->right); // 找到删除节点右子树中的最小节点作为替代节点
+            origCol = rep->color; // 保存替代节点的原始颜色
+            // 如果替代节点不是删除节点的直接右孩子
+            if (rep != del->right)
+            {
+                // 先处理它与父节点的关系
+                parentRP = rep->parent; // 更新替代节点的父节点
+                child = rep->right; // 替代节点的右孩子变成要处理的孩子节点
+                parentRP->left = child; // 替代节点的父节点的左孩子指向替代节点的孩子（因为替代节点是最小的节点）
+                if (child != nullptr)
+                {
+                    child->parent = parentRP;// 如果替代节点的孩子存在，则更新其父节点
+                }
+                // 将替代节点放到删除节点的位置
+                del->left->parent = rep;
+                del->right->parent = rep;
+                rep->left = del->left;
+                rep->right = del->right;
+                // 如果删除节点有父节点，更新父节点的孩子指向
+                if (del->parent != nullptr)
+                {
+                    if (del == del->parent->left)
+                    {
+                        del->parent->left = rep;
+                        rep->parent = del->parent;
+                    }
+                    else
+                    {
+                        del->parent->right = rep;
+                        rep->parent = del->parent;
+                    }
+                }
+                // 如果删除节点没有父节点，说明它是根节点
+                else
+                {
+                    root = rep;
+                    root->parent = nullptr;
+                }
+            }
+            // 如果替代节点是删除节点的直接右孩子
+            else
+            {
+                child = rep->right; // 孩子节点指向替代节点的右孩子
+                rep->left = del->left; // 替代节点的左孩子指向删除节点的左孩子
+                del->left->parent = rep; // 更新左孩子的父节点
+                // 更新删除节点父节点的孩子指向
+                if (del->parent != nullptr)
+                {
+                    if (del == del->parent->left)
+                    {
+                        del->parent->left = rep;
+                        rep->parent = del->parent;
+                    }
+                    else
+                    {
+                        del->parent->right = rep;
+                        rep->parent = del->parent;
+                    }
+                }
+                // 如果删除节点是根节点
+                else
+                {
+                    root = rep;
+                    root->parent = nullptr;
+                }
+                parentRP = rep; // 更新替代节点的父节点
+            }
+        }
+
+        // 如果原始颜色是黑色，需要进行额外的修复操作，因为黑色节点的删除可能会破坏红黑树的性质
+        if (origCol == Color::BLACK)
+        {
+            // 如果存在孩子节点，进行修复操作
+            if (child != nullptr)
+            {
+                removeFixup(child);
+            }
+            // 如果不存在孩子节点，将 Nil 节点（代表空节点）的父节点设置为替代节点的父节点
+            else
+            {
+                Nil->parent = parentRP;
+                // 如果替代节点的父节点存在，设置其对应的孩子指针为 Nil 节点
+                if (parentRP != nullptr)
+                {
+                    if (parentRP->left == nullptr)
+                    {
+                        parentRP->left = Nil;
+                    }
+                    else
+                    {
+                        parentRP->right = Nil;
+                    }
+                }
+                // 进行修复操作
+                removeFixup(Nil);
+                // 断开Nil节点与树的连接，因为在红黑树中 Nil 节点通常是单独存在的
+                dieConnectNil();
+            }
+        }
+        // 删除节点
+        delete del;
+    }
+        // 获取颜色，空指针为黑色
     Color getColor(Node *node)
     {
         if (node == nullptr)
@@ -279,20 +509,173 @@ class RedBackTree
         }
         node->color = color;
     }
+    // 取消 Nil 哨兵的连接
+    void dieConnectNil()
+    {
+        if (Nil == nullptr)
+        {
+            return;
+        }
+        if (Nil->parent != nullptr)
+        {
+            if (Nil == Nil->parent->left)
+            {
+                Nil->parent->left = nullptr;
+            }
+            else
+            {
+                Nil->parent->right = nullptr;
+            }
+        }
+    }
 
+public:
+    // 构造函数
+    RedBackTree() : root(nullptr), size(0), Nil(new Node())
+    {
+        Nil->color = Color::BLACK;
+    }
+    // 插入
+    void insert(const Key &key, const Value &value)
+    {
+        insertNode(key, value);
+    }
+    // 删除
+    void remove(const Key &key)
+    {
+        Node *nodeToBeRemoved = lookUp(key);
+        if (nodeToBeRemoved != nullptr)
+        {
+            deleteNode(nodeToBeRemoved);
+            size--;
+        }
+    }
+    
+    Value *at(const Key &key)
+    {
+        auto ans = lookUp(key);
+        if (ans != nullptr)
+        {
+            return &ans->value;
+        }
+        return nullptr;
+    }
 
+    int getSize() {return size;}
 
+    bool empty() {return size == 0;}
 
+    // 中序遍历打印
+    void print()
+    {
+        inorderTraversal(root);
+        std::cout << std::endl;
+    }
 
+    void clear()
+    {
+        deleteNode(root);
+        size = 0;
+    }
+    
+    // 析构函数
+    ~RedBackTree()
+    {
+        // 释放节点内存
+        deleteTree(root);
+    }
 
-
-
-
-
-
-
-
+private:
+    // 递归释放节点内存
+    void deleteTree(Node *node)
+    {
+        if (node)
+        {
+            deleteTree(node->left);
+            deleteTree(node->right);
+            delete node;
+        }
+    }
 };
+
+int main() {
+      // 创建红黑树实例
+    RedBackTree<int, int> rbTree;
+
+    int N;
+    std::cin >> N;
+    getchar();
+
+    std::string line;
+    for (int i = 0; i < N; i++)
+    {
+      std::getline(std::cin, line);
+      std::istringstream iss(line);
+      std::string command;
+      iss >> command;
+
+      int key;
+      int value;
+
+      if (command == "insert")
+      {
+          iss >> key >> value;
+          rbTree.insert(key, value);
+      }
+
+      if (command == "size")
+      {
+          std::cout << rbTree.getSize() << std::endl;
+      }
+
+      if (command == "at")
+      {
+          iss >> key;
+          int *res = rbTree.at(key);
+          if (res == nullptr)
+          {
+              std::cout << "not exist" << std::endl;
+          }
+          else
+          {
+              std::cout << *res << std::endl;
+          }
+      }
+
+      if (command == "remove")
+      {
+          iss >> key;
+          rbTree.remove(key);
+      }
+
+      if (command == "print")
+      {
+          if (rbTree.empty())
+          {
+              std::cout << "empty" << std::endl;
+          }
+          else
+          {
+              rbTree.print();
+          }
+      }
+    }
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -380,31 +380,87 @@ struct ListNode {
 // };
 
 //删除倒数第 N 个节点
-class Solution {
-public:
-    ListNode* removeNthFromEnd(ListNode* head, int n) {
-        if(!n) return head;
-        ListNode* fast = head;
-        ListNode* slow = head;
-        ListNode* dummy = new ListNode(0);
-        dummy->next = head;//无需考虑特殊情况
-        ListNode* prev = dummy;
-        while (n - 1)// 让前一个指针走 n - 1步
-        {
-            fast = fast->next;
-            --n;
-        }
-        while (fast->next)// 每个点都走到对的位置
-        {
-            prev = slow;
-            fast = fast->next;
-            slow = slow->next;
-        }
-        // 删除 slow 节点
-        prev->next = slow->next;
-        return dummy->next;
-    }
-};
+// class Solution {
+// public:
+//     ListNode* removeNthFromEnd(ListNode* head, int n) {
+//         if(!n) return head;
+//         ListNode* fast = head;
+//         ListNode* slow = head;
+//         ListNode* dummy = new ListNode(0);
+//         dummy->next = head;//无需考虑特殊情况
+//         ListNode* prev = dummy;
+//         while (n - 1)// 让前一个指针走 n - 1步
+//         {
+//             fast = fast->next;
+//             --n;
+//         }
+//         while (fast->next)// 每个点都走到对的位置
+//         {
+//             prev = slow;
+//             fast = fast->next;
+//             slow = slow->next;
+//         }
+//         // 删除 slow 节点
+//         prev->next = slow->next;
+//         return dummy->next;
+//     }
+// };
 // 首先要意识到如何找到链表的倒数第N个节点和前一个节点
 // 我的想法在于用前后指针之间的差距，当前指针到末尾时，之间的差距为 n - 1，那么后指针就在倒数第n个节点的位置，想要删除该节点还得有一个记录该节点前一项的指针
 
+// 链表相交
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        if (!headA || !headB) return nullptr;
+        size_t A_len = 0;
+        size_t B_len = 0;
+        size_t diff = 0;
+        ListNode *curA = headA;
+        ListNode *curB = headB;
+
+        while (curA)
+        {
+            ++A_len;
+            curA = curA->next;
+        }
+
+        while (curB)
+        {
+            ++B_len;
+            curB = curB->next;
+        }
+        curA = headA;
+        curB = headB;
+
+        if (A_len > B_len)
+        {
+            diff = A_len - B_len;
+            while (diff--)
+            {
+                curA = curA->next;
+            }
+        }else if (B_len > A_len)
+        {
+            diff = B_len - A_len;
+            while (diff--)
+            {
+                curB = curB->next;
+            }
+        }
+
+        while (curA != curB)
+        {
+            curA = curA->next;
+            curB = curB->next;
+        }
+
+        if (curA == curB)
+        {
+            return curA;
+        }
+
+    }
+};
+// 我的想法是记录每一个链表的长度，例如：A 为 5 , B 为 6 那么之间的差值为 1
+// 让 B 先走一步，之后两个指针一起走，相交的点就是交点，否则没有交点
