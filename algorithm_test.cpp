@@ -409,58 +409,85 @@ struct ListNode {
 // 我的想法在于用前后指针之间的差距，当前指针到末尾时，之间的差距为 n - 1，那么后指针就在倒数第n个节点的位置，想要删除该节点还得有一个记录该节点前一项的指针
 
 // 链表相交
-class Solution {
-public:
-    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
-        if (!headA || !headB) return nullptr;
-        size_t A_len = 0;
-        size_t B_len = 0;
-        size_t diff = 0;
-        ListNode *curA = headA;
-        ListNode *curB = headB;
+// class Solution {
+// public:
+//     ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+//         if (!headA || !headB) return nullptr;
+//         size_t A_len = 0;
+//         size_t B_len = 0;
+//         size_t diff = 0;
+//         ListNode *curA = headA;
+//         ListNode *curB = headB;
 
-        while (curA)
-        {
-            ++A_len;
-            curA = curA->next;
-        }
+//         while (curA)
+//         {
+//             ++A_len;
+//             curA = curA->next;
+//         }
 
-        while (curB)
-        {
-            ++B_len;
-            curB = curB->next;
-        }
-        curA = headA;
-        curB = headB;
+//         while (curB)
+//         {
+//             ++B_len;
+//             curB = curB->next;
+//         }
+//         curA = headA;
+//         curB = headB;
 
-        if (A_len > B_len)
-        {
-            diff = A_len - B_len;
-            while (diff--)
-            {
-                curA = curA->next;
-            }
-        }else if (B_len > A_len)
-        {
-            diff = B_len - A_len;
-            while (diff--)
-            {
-                curB = curB->next;
-            }
-        }
+//         if (A_len > B_len)
+//         {
+//             diff = A_len - B_len;
+//             while (diff--)
+//             {
+//                 curA = curA->next;
+//             }
+//         }else if (B_len > A_len)
+//         {
+//             diff = B_len - A_len;
+//             while (diff--)
+//             {
+//                 curB = curB->next;
+//             }
+//         }
 
-        while (curA != curB)
-        {
-            curA = curA->next;
-            curB = curB->next;
-        }
+//         while (curA != curB)
+//         {
+//             curA = curA->next;
+//             curB = curB->next;
+//         }
 
-        if (curA == curB)
-        {
-            return curA;
-        }
+//         if (curA == curB)
+//         {
+//             return curA;
+//         }
 
-    }
-};
+//     }
+// };
 // 我的想法是记录每一个链表的长度，例如：A 为 5 , B 为 6 那么之间的差值为 1
 // 让 B 先走一步，之后两个指针一起走，相交的点就是交点，否则没有交点
+
+// 环形链表 II
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        if (!head || !head->next) return nullptr;
+        // 先找到 快慢指针相遇点
+        ListNode *fast = head;
+        ListNode *slow = head;
+        while (fast  && fast->next ) 
+        {
+            fast = fast->next->next;
+            slow = slow->next;
+            if (fast == slow) break;
+        }
+        if (!fast || !fast->next) return nullptr;
+        // 此时找到相遇节点
+        ListNode *meet = fast;
+        ListNode *first = head;
+        while (first != meet)
+        {
+            first = first->next;
+            meet = meet->next;
+        }
+        return first;
+    }
+};
