@@ -466,28 +466,69 @@ struct ListNode {
 // 让 B 先走一步，之后两个指针一起走，相交的点就是交点，否则没有交点
 
 // 环形链表 II
+// class Solution {
+// public:
+//     ListNode *detectCycle(ListNode *head) {
+//         if (!head || !head->next) return nullptr;
+//         // 先找到 快慢指针相遇点
+//         ListNode *fast = head;
+//         ListNode *slow = head;
+//         while (fast  && fast->next ) 
+//         {
+//             fast = fast->next->next;
+//             slow = slow->next;
+//             if (fast == slow) break;
+//         }
+//         if (!fast || !fast->next) return nullptr;
+//         // 此时找到相遇节点
+//         ListNode *meet = fast;
+//         ListNode *first = head;
+//         while (first != meet)
+//         {
+//             first = first->next;
+//             meet = meet->next;
+//         }
+//         return first;
+//     }
+// };
+
+// 异位字母
 class Solution {
 public:
-    ListNode *detectCycle(ListNode *head) {
-        if (!head || !head->next) return nullptr;
-        // 先找到 快慢指针相遇点
-        ListNode *fast = head;
-        ListNode *slow = head;
-        while (fast  && fast->next ) 
+    bool isAnagram(string s, string t) {
+        int arr[26] = {0};
+        
+        size_t a_len = s.length();
+        size_t b_len = t.length();
+        if (a_len != b_len) return false;
+
+        for (size_t i = 0; i < a_len; i++)
         {
-            fast = fast->next->next;
-            slow = slow->next;
-            if (fast == slow) break;
+            char c = s.at(i);
+            arr[c - 'a'] += 1;
         }
-        if (!fast || !fast->next) return nullptr;
-        // 此时找到相遇节点
-        ListNode *meet = fast;
-        ListNode *first = head;
-        while (first != meet)
+
+        // 此时检查 t 的情况
+        for (size_t i = 0; i < a_len; i++)
         {
-            first = first->next;
-            meet = meet->next;
+            char c = t.at(i);
+            arr[c - 'a'] -= 1;
         }
-        return first;
+         
+        // 此时检查是否是异位词
+        for (size_t i = 0; i < 26; i++)
+        {
+            if (arr[i] != 0)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 };
+// 也就是说只要把 s 存到 hash 表里，判断 t 是否存在即可
+// 当前的疑问只要在于，如何操作unorder_set, 以及查询是键的返回值是什么？
+// 如果不使用 hash 表，也可以实在数组来模拟
+
+// 之后发现，可能会有重复的情况。 因此我考虑，用 t 中的元素去减去 s 中的元素
+// 如果均为 0，如果数组最终为 0，那么就是字母异位词
