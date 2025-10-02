@@ -493,42 +493,60 @@ struct ListNode {
 // };
 
 // 异位字母
-class Solution {
-public:
-    bool isAnagram(string s, string t) {
-        int arr[26] = {0};
+// class Solution {
+// public:
+//     bool isAnagram(string s, string t) {
+//         int arr[26] = {0};
         
-        size_t a_len = s.length();
-        size_t b_len = t.length();
-        if (a_len != b_len) return false;
+//         size_t a_len = s.length();
+//         size_t b_len = t.length();
+//         if (a_len != b_len) return false;
 
-        for (size_t i = 0; i < a_len; i++)
-        {
-            char c = s.at(i);
-            arr[c - 'a'] += 1;
-        }
+//         for (size_t i = 0; i < a_len; i++)
+//         {
+//             char c = s.at(i);
+//             arr[c - 'a'] += 1;
+//         }
 
-        // 此时检查 t 的情况
-        for (size_t i = 0; i < a_len; i++)
-        {
-            char c = t.at(i);
-            arr[c - 'a'] -= 1;
-        }
+//         // 此时检查 t 的情况
+//         for (size_t i = 0; i < a_len; i++)
+//         {
+//             char c = t.at(i);
+//             arr[c - 'a'] -= 1;
+//         }
          
-        // 此时检查是否是异位词
-        for (size_t i = 0; i < 26; i++)
-        {
-            if (arr[i] != 0)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-};
+//         // 此时检查是否是异位词
+//         for (size_t i = 0; i < 26; i++)
+//         {
+//             if (arr[i] != 0)
+//             {
+//                 return false;
+//             }
+//         }
+//         return true;
+//     }
+// };
 // 也就是说只要把 s 存到 hash 表里，判断 t 是否存在即可
 // 当前的疑问只要在于，如何操作unorder_set, 以及查询是键的返回值是什么？
 // 如果不使用 hash 表，也可以实在数组来模拟
 
 // 之后发现，可能会有重复的情况。 因此我考虑，用 t 中的元素去减去 s 中的元素
 // 如果均为 0，如果数组最终为 0，那么就是字母异位词
+
+// 两个数组的交集
+class Solution {
+public:
+    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+        unordered_set<int> nums1_set(nums1.begin(), nums1.end());
+        unordered_set<int> result_set;//存储交集结果去重
+
+        for (int elem : nums2)
+        {
+            if (nums1_set.find(elem) != nums1_set.end())
+            {
+                result_set.insert(elem);
+            }
+        }
+        return vector<int>(result_set.begin(), result_set.end());
+    }
+};
