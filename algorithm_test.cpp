@@ -534,19 +534,46 @@ struct ListNode {
 // 如果均为 0，如果数组最终为 0，那么就是字母异位词
 
 // 两个数组的交集
+// class Solution {
+// public:
+//     vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+//         unordered_set<int> nums1_set(nums1.begin(), nums1.end());
+//         unordered_set<int> result_set;//存储交集结果去重
+
+//         for (int elem : nums2)
+//         {
+//             if (nums1_set.find(elem) != nums1_set.end())
+//             {
+//                 result_set.insert(elem);
+//             }
+//         }
+//         return vector<int>(result_set.begin(), result_set.end());
+//     }
+// };
+
+//快乐数 Floyed 判圈法
 class Solution {
 public:
-    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
-        unordered_set<int> nums1_set(nums1.begin(), nums1.end());
-        unordered_set<int> result_set;//存储交集结果去重
-
-        for (int elem : nums2)
+    bool isHappy(int n) 
+    {
+        int slow = n;
+        int fast = getNext(n);
+        while (fast != 1 && fast != slow)
         {
-            if (nums1_set.find(elem) != nums1_set.end())
-            {
-                result_set.insert(elem);
-            }
+            slow = getNext(slow);
+            fast = getNext(getNext(fast));
         }
-        return vector<int>(result_set.begin(), result_set.end());
+        return fast == 1;
+    }
+    int getNext(int num)
+    {
+        int sum = 0;
+        while (num > 0)
+        {
+            int digit = num % 10;
+            sum += digit * digit;
+            num /= 10;
+        }
+        return sum;
     }
 };
