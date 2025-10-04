@@ -552,28 +552,53 @@ struct ListNode {
 // };
 
 //快乐数 Floyed 判圈法
+// class Solution {
+// public:
+//     bool isHappy(int n) 
+//     {
+//         int slow = n;
+//         int fast = getNext(n);
+//         while (fast != 1 && fast != slow)
+//         {
+//             slow = getNext(slow);
+//             fast = getNext(getNext(fast));
+//         }
+//         return fast == 1;
+//     }
+//     int getNext(int num)
+//     {
+//         int sum = 0;
+//         while (num > 0)
+//         {
+//             int digit = num % 10;
+//             sum += digit * digit;
+//             num /= 10;
+//         }
+//         return sum;
+//     }
+// };
+
 class Solution {
 public:
-    bool isHappy(int n) 
-    {
-        int slow = n;
-        int fast = getNext(n);
-        while (fast != 1 && fast != slow)
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int, int> map;
+        vector<int> result;
+        for (int i = 0; i < nums.size(); i++)
         {
-            slow = getNext(slow);
-            fast = getNext(getNext(fast));
+            int num = nums[i];
+            int diff = target - num;
+            if (map.find(diff) != map.end())
+            {
+                // 此说明找到了
+                result.push_back(i);
+                result.push_back(map[diff]);
+                return result;
+            }
+            map.insert({num, i});
         }
-        return fast == 1;
-    }
-    int getNext(int num)
-    {
-        int sum = 0;
-        while (num > 0)
-        {
-            int digit = num % 10;
-            sum += digit * digit;
-            num /= 10;
-        }
-        return sum;
+        return result;
     }
 };
+// 常规思路通常为 两重 for 循环
+// 但我更想和 hash 表建立联系
+// hash 表的作用在于去重和查找以及存在的元素
