@@ -578,27 +578,65 @@ struct ListNode {
 //     }
 // };
 
+// class Solution {
+// public:
+//     vector<int> twoSum(vector<int>& nums, int target) {
+//         unordered_map<int, int> map;
+//         vector<int> result;
+//         for (int i = 0; i < nums.size(); i++)
+//         {
+//             int num = nums[i];
+//             int diff = target - num;
+//             if (map.find(diff) != map.end())
+//             {
+//                 // 此说明找到了
+//                 result.push_back(i);
+//                 result.push_back(map[diff]);
+//                 return result;
+//             }
+//             map.insert({num, i});
+//         }
+//         return result;
+//     }
+// };
+// 常规思路通常为 两重 for 循环
+// 但我更想和 hash 表建立联系
+// hash 表的作用在于去重和查找以及存在的元素
+
+// 四数之和
 class Solution {
 public:
-    vector<int> twoSum(vector<int>& nums, int target) {
+    int fourSumCount(vector<int>& nums1, vector<int>& nums2, vector<int>& nums3, vector<int>& nums4)
+    {
         unordered_map<int, int> map;
-        vector<int> result;
-        for (int i = 0; i < nums.size(); i++)
+        int result = 0;
+
+        // 计算第一组的和
+        for (int a : nums1)
         {
-            int num = nums[i];
-            int diff = target - num;
-            if (map.find(diff) != map.end())
+            for (int b : nums2)
             {
-                // 此说明找到了
-                result.push_back(i);
-                result.push_back(map[diff]);
-                return result;
+                int sum1 = a + b;
+                // 无论map是否存在，value都要++
+                map[sum1] += 1;
             }
-            map.insert({num, i});
+        }
+
+        for (int a : nums3)
+        {
+            for (int b : nums4)
+            {
+                int sum2 = a + b;
+                // 计算 sum2 的相反数，在 hash 表中查找该值
+                auto it = map.find(-sum2);
+                if (it != map.end())
+                {
+                    result += it->second;  // 直接通过迭代器获取值，减少一次查找
+                }
+            }
         }
         return result;
     }
 };
-// 常规思路通常为 两重 for 循环
-// 但我更想和 hash 表建立联系
-// hash 表的作用在于去重和查找以及存在的元素
+// 使用 hash 表将四重 for 循环简化为两重
+// 四个数组分为两组，判断两组数组是否能够互补
