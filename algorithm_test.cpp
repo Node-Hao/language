@@ -604,39 +604,67 @@ struct ListNode {
 // hash 表的作用在于去重和查找以及存在的元素
 
 // 四数之和
-class Solution {
-public:
-    int fourSumCount(vector<int>& nums1, vector<int>& nums2, vector<int>& nums3, vector<int>& nums4)
-    {
-        unordered_map<int, int> map;
-        int result = 0;
+// class Solution {
+// public:
+//     int fourSumCount(vector<int>& nums1, vector<int>& nums2, vector<int>& nums3, vector<int>& nums4)
+//     {
+//         unordered_map<int, int> map;
+//         int result = 0;
 
-        // 计算第一组的和
-        for (int a : nums1)
-        {
-            for (int b : nums2)
-            {
-                int sum1 = a + b;
-                // 无论map是否存在，value都要++
-                map[sum1] += 1;
-            }
-        }
+//         // 计算第一组的和
+//         for (int a : nums1)
+//         {
+//             for (int b : nums2)
+//             {
+//                 int sum1 = a + b;
+//                 // 无论map是否存在，value都要++
+//                 map[sum1] += 1;
+//             }
+//         }
 
-        for (int a : nums3)
-        {
-            for (int b : nums4)
-            {
-                int sum2 = a + b;
-                // 计算 sum2 的相反数，在 hash 表中查找该值
-                auto it = map.find(-sum2);
-                if (it != map.end())
-                {
-                    result += it->second;  // 直接通过迭代器获取值，减少一次查找
-                }
-            }
-        }
-        return result;
-    }
-};
+//         for (int a : nums3)
+//         {
+//             for (int b : nums4)
+//             {
+//                 int sum2 = a + b;
+//                 // 计算 sum2 的相反数，在 hash 表中查找该值
+//                 auto it = map.find(-sum2);
+//                 if (it != map.end())
+//                 {
+//                     result += it->second;  // 直接通过迭代器获取值，减少一次查找
+//                 }
+//             }
+//         }
+//         return result;
+//     }
+// };
 // 使用 hash 表将四重 for 循环简化为两重
 // 四个数组分为两组，判断两组数组是否能够互补
+
+// 赎金信
+// class Solution {
+// public:
+//     bool canConstruct(string ransomNote, string magazine) {
+//         unordered_map<char, int> map1;
+//         unordered_map<char, int> map2;
+
+//         for (char c : ransomNote)
+//         {
+//            map1[c]++;
+//         }
+
+//         for (char c : magazine)
+//         {
+//             map2[c]++;
+//         }
+//         // 现在只需判断 map2 是否能满足 map1
+//         for (auto& pair : map1)
+//         {
+//             char c = pair.first;
+//             int need = pair.second;
+//             if (map2[c] < need) return false;
+//         }
+//         return true;
+//     }
+// };
+// 字符为key 出现次数为 value
