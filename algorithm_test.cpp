@@ -668,3 +668,48 @@ struct ListNode {
 //     }
 // };
 // 字符为key 出现次数为 value
+
+// 三数之和
+// class Solution {
+// public:
+//     vector<vector<int>> threeSum(vector<int>& nums) {
+//         vector<vector<int>> result;
+//         int n = nums.size();
+//         if (n < 3) return result;
+//         sort(nums.begin(), nums.end());
+
+//         for (int i = 0; i < nums.size(); i++)
+//         {
+//             // 如果第一个元素大于0，说明三元组必定大于0
+//             if (nums[i] > 0) return result;
+//             // 去重，确保第一个三元组不重复
+//             if (i > 0 && nums[i] == nums[i - 1]) continue;
+//             int left = i + 1;
+//             int right = n - 1;
+
+//             while (left < right)
+//             {
+//                 int sum = nums[i] + nums[left] + nums[right];
+//                 if (sum == 0)
+//                 {
+//                     // 因为排序的缘故，三元组不可能重复
+//                     result.push_back({nums[i], nums[left], nums[right]});
+//                     while (left < right && nums[left] == nums[left + 1]) left++;
+//                     while (left < right && nums[right] == nums[right - 1]) right--;
+
+//                     left++;
+//                     right--;
+//                 }
+//                 else if (sum > 0)
+//                 {
+//                     right--;
+//                 }
+//                 else
+//                 {
+//                     left++;
+//                 }
+//             }
+//         }
+//         return result;
+//     }
+// };
