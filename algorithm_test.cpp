@@ -715,132 +715,167 @@ struct ListNode {
 // };
 
 // 翻转字符串II
+// #include <iostream>
+// #include <vector>
+// #include <list>
+// #include <deque>
+// #include <stdexcept> // 用于异常处理
+// #include <sstream>
+// #include <string>
+
+// template <typename T, typename Cotainer = std::deque<T>>
+// class MyStack
+// {
+//     private:
+//         Cotainer data;// 使用底层容器存储栈的元素
+
+//     public:
+//         // 压入元素到栈顶
+//         void push(const T& value)
+//         {
+//             data.push_back(value);
+//         }
+//         // 弹出栈顶元素
+//         void pop()
+//         {
+//             if (!empty())
+//             {
+//                 data.pop_back();
+//             }
+//             else
+//             {
+//                 throw std::runtime_error("Stack is empty.");
+//             }
+//         }
+//         // 返回栈顶元素的引用
+//         T& top()
+//         {
+//             if (!empty())
+//             {
+//                 return data.back();
+//             }
+//             else
+//             {
+//                 throw std::runtime_error("Stack is empty.");
+//             }
+//         }
+
+//         // 检查栈是否为空
+//         bool empty() const
+//         {
+//             return data.empty();
+//         }
+
+//         // 返回栈的大小
+//         size_t size() const
+//         {
+//             return data.size();
+//         }
+// };
+
+// int main() {
+//         // 使用 std::deque 作为底层容器的示例
+//     MyStack<int, std::deque<int>> stack;
+
+//     int N;
+//     std::cin >> N;
+//     getchar();
+
+//     std::string line;
+//     for (int i = 0; i < N; i++) {
+//         std::getline(std::cin, line);
+//         std::istringstream iss(line);
+//         std::string command;
+//         iss >> command;
+//         int element;
+//         if (command == "push") {
+//             iss >> element;
+//             stack.push(element);
+//         }
+//         if (command == "pop") {
+//             try {
+//                 stack.pop();
+//             } catch(const std::runtime_error& e) {
+//                 // 不做任何处理
+//                 continue;
+//             }
+//         }
+//         if (command == "top") {
+//             try {
+//                 std::cout << stack.top() << std::endl;
+//             } catch(const std::runtime_error& e) {
+//                 std::cout << "null" << std::endl;
+//             }   
+//         }
+//         if (command == "size") {
+//             std::cout << stack.size() << std::endl;
+//         }
+//         if (command == "empty") {
+//             std::cout << (stack.empty() ? "true" : "false") << std::endl;
+//         }
+//     }
+//     return 0;
+// }
+// class Solution {
+// public:
+//     string reverseStr(string s, int k) 
+//     {
+//         int n = s.size();
+
+//         for (int i = 0; i < n; i += 2 * k)//每次划分出一个区间
+//         {
+//             // 若剩余字符小于 k 全部反转
+//             // 否则反转前 k 个
+//             int end = min(i + k - 1, n - 1);
+//             reverse(s, i, end);
+//         }
+//         return s;
+//     }
+//     void reverse (string &s, int left, int right)
+//     {
+//         while (left < right)
+//         {
+//             char tmp = s[left];
+//             s[left] = s[right];
+//             s[right] = tmp;
+//             left++;
+//             right--;
+//         }
+//     }
+// };
+
+// 替换字符串
 #include <iostream>
-#include <vector>
-#include <list>
-#include <deque>
-#include <stdexcept> // 用于异常处理
-#include <sstream>
 #include <string>
+#include <cctype>// 包含 isdigit 函数的头文件
 
-template <typename T, typename Cotainer = std::deque<T>>
-class MyStack
+
+// 字符串 s 包含小写字母和数字字符，字母字符不变，数字替换为 number
+// 核心思路为新建字符串拼接
+
+std::string replace (std::string s, std::string &new_s)
 {
-    private:
-        Cotainer data;// 使用底层容器存储栈的元素
-
-    public:
-        // 压入元素到栈顶
-        void push(const T& value)
+    int n = s.size();
+    for (int i = 0; i < n; i++)
+    {
+        char c = s[i];
+        if (!isdigit(c))
         {
-            data.push_back(value);
+            new_s.insert(new_s.end(), c);
         }
-        // 弹出栈顶元素
-        void pop()
+        else
         {
-            if (!empty())
-            {
-                data.pop_back();
-            }
-            else
-            {
-                throw std::runtime_error("Stack is empty.");
-            }
-        }
-        // 返回栈顶元素的引用
-        T& top()
-        {
-            if (!empty())
-            {
-                return data.back();
-            }
-            else
-            {
-                throw std::runtime_error("Stack is empty.");
-            }
-        }
-
-        // 检查栈是否为空
-        bool empty() const
-        {
-            return data.empty();
-        }
-
-        // 返回栈的大小
-        size_t size() const
-        {
-            return data.size();
-        }
-};
-
-int main() {
-        // 使用 std::deque 作为底层容器的示例
-    MyStack<int, std::deque<int>> stack;
-
-    int N;
-    std::cin >> N;
-    getchar();
-
-    std::string line;
-    for (int i = 0; i < N; i++) {
-        std::getline(std::cin, line);
-        std::istringstream iss(line);
-        std::string command;
-        iss >> command;
-        int element;
-        if (command == "push") {
-            iss >> element;
-            stack.push(element);
-        }
-        if (command == "pop") {
-            try {
-                stack.pop();
-            } catch(const std::runtime_error& e) {
-                // 不做任何处理
-                continue;
-            }
-        }
-        if (command == "top") {
-            try {
-                std::cout << stack.top() << std::endl;
-            } catch(const std::runtime_error& e) {
-                std::cout << "null" << std::endl;
-            }   
-        }
-        if (command == "size") {
-            std::cout << stack.size() << std::endl;
-        }
-        if (command == "empty") {
-            std::cout << (stack.empty() ? "true" : "false") << std::endl;
+            new_s.append("number");
         }
     }
-    return 0;
+    return new_s;
 }
-class Solution {
-public:
-    string reverseStr(string s, int k) 
-    {
-        int n = s.size();
 
-        for (int i = 0; i < n; i += 2 * k)//每次划分出一个区间
-        {
-            // 若剩余字符小于 k 全部反转
-            // 否则反转前 k 个
-            int end = min(i + k - 1, n - 1);
-            reverse(s, i, end);
-        }
-        return s;
-    }
-    void reverse (string &s, int left, int right)
-    {
-        while (left < right)
-        {
-            char tmp = s[left];
-            s[left] = s[right];
-            s[right] = tmp;
-            left++;
-            right--;
-        }
-    }
-};
 
+int main()
+{
+    std::string s;
+    std::cin >> s;
+    std::string new_s;
+    std::cout << replace(s, new_s);
+}
