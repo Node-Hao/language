@@ -879,3 +879,62 @@ int main()
     std::string new_s;
     std::cout << replace(s, new_s);
 }
+
+// 反转字符串中的单词
+class Solution {
+public:
+    string reverseWords(string s) {
+        string buffer;
+        string result;
+        vector<string> arr_s;
+
+        for (char c : s)
+        {
+            if (c != ' ')
+            {
+                buffer += c;
+            }
+            else
+            {
+                if (!buffer.empty())
+                {
+                    arr_s.push_back(buffer);
+                    buffer.clear();
+                }
+            }
+        }
+        if (!buffer.empty())
+        {
+            arr_s.push_back(buffer);
+        }
+        if (arr_s.empty())
+        {
+            return "";
+        }
+        // 此时 arr_s 中包含所有单词
+        int n = arr_s.size();
+        int left = 0;
+        int right = n - 1;
+        
+        while (left < right)
+        {
+            swap(arr_s[left], arr_s[right]);
+            ++left;
+            --right;
+        }
+        // 此时arr_s 中单词顺序已经正确，只需往字符串中添加即可
+        for (int i = 0; i < n ; i++)
+        {
+            result.append(arr_s[i]);
+            if (i != n - 1)
+            {
+                result += ' ';
+            }
+        }
+        return result;
+    }
+};
+// 至少一个空格将字符串中的单词分隔开
+// 返回字符串用单个空格分隔单词，不需要多于空格
+// 不如将所有的单词都创建为字符串，之后直接拼接即可
+// 创建一个字符串数组，下标的先后顺序就是字符串的顺序
