@@ -938,3 +938,31 @@ public:
 // 返回字符串用单个空格分隔单词，不需要多于空格
 // 不如将所有的单词都创建为字符串，之后直接拼接即可
 // 创建一个字符串数组，下标的先后顺序就是字符串的顺序
+
+// 右旋转字符串
+#include<iostream>
+#include<string>
+
+
+int main()
+{
+    std::string s;
+    int k;
+    std::cin >> k >> s;
+    std::string result;
+    size_t n = s.size();
+    
+    if (!k || !n)
+    {
+        std::cout << s;
+        return 0;
+    }
+
+    std::string tail = s.substr(n-k, n);
+    std::string head = s.substr(0, n-k);
+
+    result = tail + head;
+    std::cout << result;
+    
+    return 0;
+}
