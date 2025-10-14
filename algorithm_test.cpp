@@ -966,3 +966,29 @@ int main()
     
     return 0;
 }
+
+// 匹配字符串中的字符的第一个下标
+class Solution {
+public:
+    int strStr(string haystack, string needle) {
+        int haylen = haystack.size();
+        int needlen = needle.size();
+
+        if (haylen < needlen) return -1;
+        // 第一层 for 循环确保遍历到每一个haystack, 顺便作为索引的返回值
+        // 第二次 for 循环确保遍历到每一个needle
+        for (int i = 0; i < haylen; i++)
+        {
+            int hayIndex = i;
+            int needIndex = 0;
+
+            while (needIndex < needlen && haystack[hayIndex] == needle[needIndex])
+            {
+                ++hayIndex;
+                ++needIndex;
+            }
+            if (needIndex == needlen) return i;
+        }
+        return -1;
+    }
+};
