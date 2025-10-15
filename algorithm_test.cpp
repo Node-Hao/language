@@ -992,3 +992,32 @@ public:
         return -1;
     }
 };
+
+class Solution {
+public:
+    bool repeatedSubstringPattern(string s) {
+        int len = s.size();
+        // 仅枚举可能的子串长度（约数且 <= len/2）
+        for (int i = 1; i <= len / 2; ++i) {
+            if (len % i != 0) {
+                continue;  // 不是约数，跳过
+            }
+            // 检查所有子串区间是否与第一个子串相同
+            bool isRepeated = true;
+            for (int j = i; j < len; j++)
+            {
+                if (s[j] != s[j - i])
+                {
+                    isRepeated = false;
+                    break;
+                }
+            }
+            if (isRepeated) {
+                return true;
+            }
+        }
+        return false;
+    }
+};
+// 子串长度为 i , 每重复一次，新的子串就和前一个子串一样
+// 因此原字符串中的第 j 个字符必然与新字符串 j - i 个字符相同
