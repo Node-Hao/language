@@ -942,6 +942,7 @@ public:
 // 右旋转字符串
 #include<iostream>
 #include<string>
+#include<stack>
 
 
 int main()
@@ -1021,3 +1022,56 @@ public:
 };
 // 子串长度为 i , 每重复一次，新的子串就和前一个子串一样
 // 因此原字符串中的第 j 个字符必然与新字符串 j - i 个字符相同
+
+class MyQueue {
+private:
+    // 声明为类成员变量所有成员均可房屋
+    std::stack<int> s1;// 输入栈：接收新元素
+    std::stack<int> s2;// 输出栈：提供队头元素
+
+    // 辅助函数 s2 为空时，将 s1 中元素全部转移至 s2
+    void transfer()
+    {
+        if (s2.empty())
+        {
+            while (!s1.empty())
+            {
+                int val = s1.top();
+                s1.pop();
+                s2.push(val);
+            }
+        }
+    }
+
+public:
+    MyQueue() { }
+    
+    void push(int x) {
+        s1.push(x);
+    }
+    
+    int pop() {
+        transfer();
+        int val = s2.top();
+        s2.pop();
+        return val;
+    }
+    
+    int peek() {
+        transfer();
+        return s2.top();
+    }
+    
+    bool empty() {
+        return s1.empty() && s2.empty();
+    }
+};
+
+/**
+ * Your MyQueue object will be instantiated and called as such:
+ * MyQueue* obj = new MyQueue();
+ * obj->push(x);
+ * int param_2 = obj->pop();
+ * int param_3 = obj->peek();
+ * bool param_4 = obj->empty();
+ */
