@@ -1075,3 +1075,68 @@ public:
  * int param_3 = obj->peek();
  * bool param_4 = obj->empty();
  */
+#include<list>
+#include<queue>
+ class MyStack {
+private:
+    std::queue<int, std::list<int>> q1;
+    std::queue<int, std::list<int>> q2;
+
+    void transfer()
+    {
+        int size = q1.size() - 1;
+        while (size--)
+        {
+            int val = q1.front();;
+            q1.pop();
+            q2.push(val);
+        }
+    }
+    void swapQueue()
+    {
+        std::queue<int, std::list<int>> q = q1;
+        q1 = q2;
+        q2 = q;
+    }
+
+public:
+    MyStack() {
+        
+    }
+    
+    void push(int x) {
+        q1.push(x);
+    }
+    
+    int pop() {
+        transfer();
+        int val = q1.front();
+        q1.pop();
+        swapQueue();
+        return val;
+        
+    }
+    
+    int top() {
+        transfer();
+        int val = q1.front();
+        q1.pop();
+        q2.push(val);
+        swapQueue();
+        return val;
+    }
+    
+    bool empty() {
+        return q1.empty();
+    }
+};
+// 目前不知道哪个是主队列，主队列用来存储，其实只要该一下名字即可，永远让q1当主队列
+
+/**
+ * Your MyStack object will be instantiated and called as such:
+ * MyStack* obj = new MyStack();
+ * obj->push(x);
+ * int param_2 = obj->pop();
+ * int param_3 = obj->top();
+ * bool param_4 = obj->empty();
+ */
