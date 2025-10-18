@@ -1140,3 +1140,73 @@ public:
  * int param_3 = obj->top();
  * bool param_4 = obj->empty();
  */
+
+ // 括号的匹配程度 原版代码
+ class Solution {
+public:
+    bool isValid(string s) {
+        size_t n = s.size();
+        stack<int> sk;
+        for (int i = 0; i < n; i++)
+        {
+            char c = s[i];
+            if (c == '(' || c == '[' || c == '{')
+            {
+                sk.push(c);
+            }
+            else
+            {
+                if (sk.empty()) return false;
+                char topChar = sk.top();
+                sk.pop();
+                
+                switch (c)
+                {
+                    case ')':
+                        if (topChar != '(') return false;
+                        break;
+                    case ']':
+                        if (topChar != '[') return false;
+                        break;
+                    case '}':
+                        if (topChar != '{') return false;
+                        break;
+                }
+            }
+        }
+        if (!sk.empty()) return false;
+        return true;
+    }
+};
+#include<unordered_map>
+// 优化版本
+class Solution {
+public:
+    bool isValid(string s) {
+        size_t n = s.size();
+        stack<char> sk;
+        // 建立由括号到左括号的映射表
+        unordered_map<char, char> bracketMap = {{')', '('}, {']', '['}, {'}', '{'}};
+        // 奇数剪枝
+        if (n % 2 != 0) return false;
+
+        for (char c : s)
+        {
+            if (c == '(' || c == '[' || c == '{')
+            {
+                sk.push(c);
+            }
+            else
+            {
+                if (sk.empty() || bracketMap[c] != sk.top())
+                {
+                    return false;
+                }
+                sk.pop();
+            }
+        }
+
+        return sk.empty();
+    }
+};
+// 有可能队列为空的时候直接给右括号
