@@ -1210,3 +1210,65 @@ public:
     }
 };
 // 有可能队列为空的时候直接给右括号
+#include<algorithm>
+#include<string>
+// 删除相邻重复元素
+// 第一版原始代码
+class Solution {
+public:
+    string removeDuplicates(string s) {
+        stack<char> sk;
+        string result;
+        
+        for (char c : s)
+        {
+            if (sk.empty())
+            {
+                sk.push(c);
+            }
+            else
+            {
+                char topChar = sk.top();
+                if (c == topChar)
+                {
+                    sk.pop();
+                }
+                else
+                {
+                    sk.push(c);
+                }
+            }
+        }
+
+        while(!sk.empty())
+        {
+            char topChar = sk.top();
+            sk.pop();
+            result += topChar;
+        }
+       reverse(result.begin(), result.end());
+
+        return result;
+    }
+};
+
+// 改进算法
+class Solution {
+public:
+    string removeDuplicates(string s) {
+        string res;
+        for (char c : s)
+        {
+            // 若栈非空且栈顶与当前元素一致，直接弹出元素
+            if(!res.empty() && res.back() == c)
+            {
+                res.pop_back();
+            }
+            else
+            {
+                res.push_back(c);
+            }
+        }
+        return res;
+    }
+};
