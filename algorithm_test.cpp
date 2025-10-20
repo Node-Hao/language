@@ -1272,3 +1272,41 @@ public:
         return res;
     }
 };
+#include<set>
+// 逆波兰表达式求值
+class Solution {
+public:
+    int evalRPN(vector<string>& tokens) {
+        stack<int> sk;
+        unordered_set<string> ops = {"+", "-", "*", "/"};
+        
+        for (string s : tokens)
+        {
+            if (ops.count(s))
+            {
+                int right = sk.top(); sk.pop();
+                int left = sk.top(); sk.pop();
+                int result;
+                switch(s[0])
+                {
+                    case '+': 
+                        result = left + right;
+                        break;
+                    case '-': 
+                        result = left - right;
+                        break;
+                    case '/': 
+                        result = left / right;
+                        break;
+                    case '*': 
+                        result = left * right;
+                        break;
+                }
+                sk.push(result);
+            }else{
+                sk.push(stoi(s));
+            }
+        }
+        return sk.top();
+    }
+};
