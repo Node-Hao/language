@@ -1273,6 +1273,7 @@ public:
     }
 };
 #include<set>
+#include<unordered_set>
 // 逆波兰表达式求值
 class Solution {
 public:
@@ -1310,3 +1311,46 @@ public:
         return sk.top();
     }
 };
+
+// 滑动窗口求最大值
+
+class Solution {
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        vector<int> result;
+        deque<pair<int,int>> sk;
+        int n = nums.size();
+
+        for (int i = 0; i < n; i++)
+        {
+            // 计算当前窗口的左边界，只有当 i >= 2 时才有意义
+            int left = i - k + 1;
+            while(!sk.empty() && sk.front().second < left)
+            {
+                // 移除队列中所有在窗户外的元素
+                sk.pop_front();
+            }
+            
+            // 队尾移除所有小于当前元素的元素，维持单调栈的特性
+            while (!sk.empty() && sk.back().first <= nums[i])
+            {
+                sk.pop_back();
+            }
+            // 将当前元素加入到队尾
+            sk.push_back({nums[i], i});
+
+            // 当i >= k - 1 时窗口形成, 队头即为窗口最大值
+            if (i >= k - 1)
+            {
+                result.push_back(sk.front().first);
+            }
+        }
+        return result;
+    }
+};
+// 栈中永远只存最大的元素 ， 开始先做好准备工作，把第一个窗口的内容全部判断完毕
+// 此时栈中内容为 3，窗口移动之后，将新出现的元素与栈中元素做对比
+// 现在关键的问题在于栈中的最大值会随着窗口出去
+// 我的想法是用 hash 表将元素与它的索引对应起来，用索引来控制窗口的移动
+// 但是如果多个元素连续一样，还是没法判断先后顺序
+// 现在最大的问题在于何时淘汰栈的最大值(已解决)
