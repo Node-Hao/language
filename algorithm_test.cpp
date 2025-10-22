@@ -1354,3 +1354,67 @@ public:
 // 我的想法是用 hash 表将元素与它的索引对应起来，用索引来控制窗口的移动
 // 但是如果多个元素连续一样，还是没法判断先后顺序
 // 现在最大的问题在于何时淘汰栈的最大值(已解决)
+
+// 前 k 个最大元素
+// 法一：map 转 vector 排序法
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        unordered_map<int, int> freq;
+        int n = nums.size();
+        vector<int> result;
+        
+        for (int i = 0; i < n; i++)
+        {
+            freq[nums[i]]++;
+        }
+
+        vector<pair<int, int>> freq_vec(freq.begin(), freq.end());
+        sort(freq_vec.begin(), freq_vec.end(),
+            [](const pair<int,int> &a, const pair<int, int> &b){
+                return a.second > b.second;//降序排列
+            });
+        
+        for (int i = 0; i < k; ++i)
+        {
+            result.push_back(freq_vec[i].first);
+        }
+        return result;
+    }
+};
+
+// 法二： 转为小根堆
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        unordered_map<int, int> freq;
+        int n = nums.size();
+        vector<int> result;
+        
+        for (int i = 0; i < n; i++)
+        {
+            freq[nums[i]]++;
+        }
+
+        priority_queue<pair<int,int>, vector<pair<int,int>>,greater<pair<int,int>>> min_heap;
+
+        for (const auto& p : freq)
+        {
+            min_heap.emplace(p.second, p.first);
+            if (min_heap.size() > k)
+            {
+                min_heap.pop();// 超过k个元素移除频率最小的元素
+            }
+        }
+        
+        while (!min_heap.empty())
+        {
+            result.push_back(min_heap.top().second);
+            min_heap.pop();
+        }
+
+        reverse(result.begin(), result.end());
+
+        return result;
+    }
+};
