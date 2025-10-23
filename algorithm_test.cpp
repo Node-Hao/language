@@ -1418,3 +1418,64 @@ public:
         return result;
     }
 };
+
+// 二叉树前序遍历递归法
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
+
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int> result;
+        Traversal(root, result);
+        return result;
+    }
+    void Traversal(TreeNode* cur, vector<int> &vec){//1.确定参数和返回值
+        if (cur == nullptr) return;
+        vec.push_back(cur->val);
+        Traversal(cur->left, vec);
+        Traversal(cur->right, vec);
+    }
+};
+
+class Solution {
+private:
+    vector<int> result;
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        if (root == nullptr) return result;
+        result.push_back(root->val);
+        preorderTraversal(root->left);
+        preorderTraversal(root->right);
+        return result;
+    }
+};
+// 前序遍历迭代法
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int> vec;
+        if (root == nullptr) return vec;
+        stack<TreeNode*> sk;
+        TreeNode* cur = root;
+        sk.push(cur);
+        
+        while (!sk.empty())
+        {
+            cur = sk.top();
+            vec.push_back(cur->val);
+            sk.pop();
+
+            if (cur->right) sk.push(cur->right);
+
+            if (cur->left) sk.push(cur->left);
+        }
+        return vec;
+    }
+};
