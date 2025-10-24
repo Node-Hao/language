@@ -1479,3 +1479,28 @@ public:
         return vec;
     }
 };
+
+// 中序遍历迭代法
+class Solution {
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        stack<TreeNode*> sk;
+        TreeNode* cur = root;
+        vector<int> result;
+        
+        while (cur != nullptr || !sk.empty())
+        {
+            if (cur != nullptr)
+            {
+                sk.push(cur);
+                cur = cur->left;//左
+            }else{
+                cur = sk.top();
+                sk.pop();
+                result.push_back(cur->val);//中
+                cur = cur->right;//右
+            }
+        }
+        return result;
+    }
+};
