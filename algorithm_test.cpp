@@ -1504,3 +1504,96 @@ public:
         return result;
     }
 };
+
+// 中序遍历迭代法 空指针标记法
+class Solution {
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        stack<TreeNode*> sk;
+        vector<int> result;
+        sk.push(root);
+        if (root == nullptr) return result;
+
+        while (!sk.empty())
+        {
+            TreeNode* cur = sk.top();
+            if (cur != nullptr)
+            {
+                sk.pop();
+                if (cur->right) sk.push(cur->right);
+                sk.push(cur);
+                sk.push(nullptr);//标记中间节点
+                if (cur->left) sk.push(cur->left);
+            }else{
+                sk.pop();
+                cur = sk.top();
+                sk.pop();
+                result.push_back(cur->val);
+            }
+        }
+        return result;
+    }
+};
+// 空指针标记法，主要用于标记访问过但没有操作的元素，没有节点都可以看做是中间节点
+
+// 中序遍历迭代法 bool 标记法
+class Solution {
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        stack<pair<TreeNode*, bool>> sk;
+        vector<int> result;
+        if (root != nullptr) sk.push(make_pair(root, false));
+        
+        while (!sk.empty())
+        {
+            TreeNode* cur = sk.top().first;
+            bool visited = sk.top().second;
+            sk.pop();
+
+            if (visited)//表示当前节点和他的左右孩子节点都已被访问过，可以收割了
+            {
+                result.push_back(cur->val);
+                continue;
+            }
+
+            if (cur->right)
+            {
+                sk.push(make_pair(cur->right, false));
+            }
+
+            sk.push(make_pair(cur, true));
+
+            if (cur->left)
+            {
+                sk.push(make_pair(cur->left, false));
+            }
+        }
+        return result;
+    }
+};
+
+// 二叉树的层序遍历
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        queue<TreeNode*> q;
+        vector<vector<int>> result;
+        if (root != nullptr)  q.push(root);
+
+        while (!q.empty())
+        {
+            int size = q.size();
+            vector<int> tmp;
+            for (int i = 0; i < size; i++)
+            {
+                TreeNode* cur = q.front();
+                tmp.push_back(cur->val);
+                q.pop();
+                if (cur->left) q.push(cur->left);
+                if (cur->right) q.push(cur->right);
+            }
+            result.push_back(tmp);
+        }
+        return result;
+    }
+};
