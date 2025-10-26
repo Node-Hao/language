@@ -1597,3 +1597,39 @@ public:
         return result;
     }
 };
+// 二叉树的层序遍历二
+class Solution {
+public:
+    vector<vector<int>> levelOrderBottom(TreeNode* root) {
+        vector<vector<int>> result;
+        queue<TreeNode*> q;
+        if (root != nullptr) q.push(root);
+
+        while (!q.empty())
+        {
+            size_t size = q.size();
+            vector<int> tmp;
+            for (size_t i = 0; i < size; i++)
+            {
+                TreeNode* cur = q.front();
+                q.pop();
+                tmp.push_back(cur->val);
+                if (cur->left) q.push(cur->left);
+                if (cur->right) q.push(cur->right);
+            }
+            result.push_back(tmp);
+        }
+        // int left = 0;
+        // int right = result.size() - 1;
+        // while (left < right)
+        // {
+        //     vector<int> tmp = result[left];
+        //     result[left] = result[right];
+        //     result[right] = tmp;
+        //     ++left;
+        //     --right;
+        // }
+        reverse(result.begin(), result.end());
+        return result;
+    }
+};
