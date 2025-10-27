@@ -1633,3 +1633,27 @@ public:
         return result;
     }
 };
+// 二叉树的右视图
+class Solution {
+public:
+    vector<int> rightSideView(TreeNode* root) {
+        queue<TreeNode*> q;
+        vector<int> result;
+        if (root != nullptr) q.push(root);
+        TreeNode* cur;
+
+        while (!q.empty())
+        {
+            size_t size = q.size();
+            for (int i = 0; i < size; i++)
+            {
+                cur = q.front();
+                q.pop();
+                if (cur->left) q.push(cur->left);
+                if (cur->right) q.push(cur->right);
+            }
+            result.push_back(cur->val);
+        }
+        return result;
+    }
+};
