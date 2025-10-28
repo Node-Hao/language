@@ -1657,3 +1657,69 @@ public:
         return result;
     }
 };
+// N 叉树的层序遍历
+
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    vector<Node*> children;
+
+    Node() {}
+
+    Node(int _val) {
+        val = _val;
+    }
+
+    Node(int _val, vector<Node*> _children) {
+        val = _val;
+        children = _children;
+    }
+};
+
+
+class Solution {
+public:
+    vector<vector<int>> levelOrder(Node* root) {
+        vector<vector<int>> result;
+        queue<Node*> q;
+        if (root) q.push(root);
+        Node* cur;
+
+        while (!q.empty())
+        {
+            size_t size = q.size();
+            vector<int> vec;
+            for (size_t i = 0; i < size; i++)
+            {
+                cur = q.front();
+                q.pop();
+                vec.push_back(cur->val);
+                if ((cur->children).size())
+                {
+                    for(Node* c : cur->children)
+                    {
+                        q.push(c);
+                    }
+                }
+            }
+            result.push_back(vec);
+        }
+        return result;
+    }
+};
+// 最大的问题在于如何切换到下一个节点？
+// 以及 cur->children 是指哪个节点？
+
+
+
+
+
+
+
+
+
+
+
+
+
