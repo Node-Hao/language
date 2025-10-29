@@ -1678,10 +1678,86 @@ public:
 };
 
 
+// class Solution {
+// public:
+//     vector<vector<int>> levelOrder(Node* root) {
+//         vector<vector<int>> result;
+//         queue<Node*> q;
+//         if (root) q.push(root);
+//         Node* cur;
+
+//         while (!q.empty())
+//         {
+//             size_t size = q.size();
+//             vector<int> vec;
+//             for (size_t i = 0; i < size; i++)
+//             {
+//                 cur = q.front();
+//                 q.pop();
+//                 vec.push_back(cur->val);
+//                 if ((cur->children).size())
+//                 {
+//                     for(Node* c : cur->children)
+//                     {
+//                         q.push(c);
+//                     }
+//                 }
+//             }
+//             result.push_back(vec);
+//         }
+//         return result;
+//     }
+// };
+// 最大的问题在于如何切换到下一个节点？
+// 以及 cur->children 是指哪个节点？
+
+// 每个树行中找到最大值
 class Solution {
 public:
-    vector<vector<int>> levelOrder(Node* root) {
-        vector<vector<int>> result;
+    vector<int> largestValues(TreeNode* root) {
+        queue<TreeNode*> q;
+        vector<int> result;
+        if (root) q.push(root);
+        TreeNode* cur;
+
+        while (!q.empty())
+        {
+            size_t size = q.size();
+            int max = q.front()->val;
+            for(size_t i = 0; i < size; i++)
+            {
+                cur = q.front();
+                q.pop();
+                if (max < cur->val) swap(max, cur->val);
+                if (cur->left) q.push(cur->left);
+                if (cur->right) q.push(cur->right);
+            }
+            result.push_back(max);
+        }
+        return result;
+    }
+};
+
+// 填充每一个节点的右侧指针
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* left;
+    Node* right;
+    Node* next;
+
+    Node() : val(0), left(NULL), right(NULL), next(NULL) {}
+
+    Node(int _val) : val(_val), left(NULL), right(NULL), next(NULL) {}
+
+    Node(int _val, Node* _left, Node* _right, Node* _next)
+        : val(_val), left(_left), right(_right), next(_next) {}
+};
+
+class Solution {
+public:
+    Node* connect(Node* root) {
         queue<Node*> q;
         if (root) q.push(root);
         Node* cur;
@@ -1689,33 +1765,47 @@ public:
         while (!q.empty())
         {
             size_t size = q.size();
-            vector<int> vec;
-            for (size_t i = 0; i < size; i++)
+            Node* prev = q.front();
+            for(size_t i = 0; i < size; i++)
             {
                 cur = q.front();
                 q.pop();
-                vec.push_back(cur->val);
-                if ((cur->children).size())
-                {
-                    for(Node* c : cur->children)
-                    {
-                        q.push(c);
-                    }
-                }
+                if (i == size - 1) cur->next = NULL;//此时已经把最右侧节点的NULL修改完毕
+                if (i > 0) prev->next = cur;//此时中间节点也修改完毕
+                prev = cur;
+                if (cur->left) q.push(cur->left);
+                if (cur->right) q.push(cur->right);
             }
-            result.push_back(vec);
         }
-        return result;
+        return root;
     }
 };
-// 最大的问题在于如何切换到下一个节点？
-// 以及 cur->children 是指哪个节点？
+// 二叉树的最小深度
+class Solution {
+public:
+    int minDepth(TreeNode* root) {
+        queue<TreeNode*> q;
+        if (root) q.push(root);
+        TreeNode* cur;
+        int minDepth = 0;
 
-
-
-
-
-
+        while (!q.empty())
+        {
+            size_t size = q.size();
+            minDepth += 1;
+            for(size_t i = 0; i < size; i++)
+            {
+                cur = q.front();
+                q.pop();
+                if (!cur->left && !cur->right) return minDepth;
+                if (cur->left) q.push(cur->left);
+                if (cur->right) q.push(cur->right);
+            }
+        }
+        return minDepth;
+    }
+};
+// 左右节点都为空代表这颗子树结束，也就是说只要找到第一个结束的子树即可
 
 
 
