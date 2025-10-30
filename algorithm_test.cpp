@@ -1807,7 +1807,93 @@ public:
 };
 // 左右节点都为空代表这颗子树结束，也就是说只要找到第一个结束的子树即可
 
+// 反转二叉树
+// 层序遍历法
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        queue<TreeNode*> q;
+        if (root) q.push(root);
+        TreeNode* cur;
 
+        while (!q.empty())
+        {
+            size_t size = q.size();
+            cur = q.front();
+            q.pop();
+            swap(cur->left, cur->right);
+            if (cur->left) q.push(cur->left);
+            if (cur->right) q.push(cur->right);
+        }
+        return root;
+    }
+};
+// 递归法
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if (!root) return nullptr;
+
+        TreeNode* left = invertTree(root->left);
+        TreeNode* right = invertTree(root->right);
+
+        root->left = right;
+        root->right = left;
+
+        return root;
+    }
+};
+// 对称二叉树
+// 递归写法
+class Solution {
+public:
+    bool isSymmetric(TreeNode* root) {
+        if (!root) return true;
+        return isMirror(root->left, root->right);
+
+    }
+    bool isMirror(TreeNode* left, TreeNode* right)
+    {
+        if (!left && !right) return true;//两个都为空 true
+        if (!left || !right) return false;// 一个为空 false
+        if (left->val != right->val) return false; // 值不等不对称
+        // 递归判断，左对左，右对右
+        return isMirror(left->left, right->right) && isMirror(left->right, right->left);
+    }
+};
+// 队列法模拟
+class Solution {
+public:
+    bool isSymmetric(TreeNode* root) {
+        if (!root) return true;
+        queue<TreeNode*> q;
+        // 初始入队一对节点
+        q.push(root->left);
+        q.push(root->right);
+
+        while(!q.empty())
+        {
+            // 出队也是一对节点
+            TreeNode* t1 = q.front();
+            q.pop();
+            TreeNode* t2 = q.front();
+            q.pop();
+            // 都为空直接比较下一对
+            if (!t1 && !t2) continue;
+            // 一个为空一个非空，不对称
+            if (!t1 || !t2) return false;
+            // 值不等，不对称
+            if (t1->val != t2->val) return false;
+
+            // 按境像顺序入队
+            q.push(t1->left);
+            q.push(t2->right);
+            q.push(t1->right);
+            q.push(t2->left);
+        }
+        return true;
+    }
+};
 
 
 
