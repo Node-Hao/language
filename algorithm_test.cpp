@@ -1894,8 +1894,34 @@ public:
         return true;
     }
 };
+// 平衡二叉树
+class Solution {
+public:
+    bool isBalanced(TreeNode* root) {
+        if (!root) return true;
+        int diff = std::abs(depth(root->left) - depth(root->right));
+        if (diff >= 2) return false;
+        return isBalanced(root->left) && isBalanced(root->right);
+    }
+    int depth(TreeNode* cur)
+    {
+        if (!cur) return 0;
+        int leftDepth = depth(cur->left);
+        int rightDepth = depth(cur->right);
+        return max(leftDepth, rightDepth) + 1;
+    }
+};
 
-
+// 完全二叉树中节点个数
+class Solution {
+public:
+    int countNodes(TreeNode* root) {
+        if (!root) return 0;
+        int leftCounts = countNodes(root->left);
+        int rightCounts = countNodes(root->right);
+        return leftCounts + rightCounts + 1;
+    }
+};
 
 
 
