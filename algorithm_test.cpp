@@ -1923,5 +1923,39 @@ public:
     }
 };
 
+// 二叉树的全部路径
+class Solution {
+public:
+    vector<string> binaryTreePaths(TreeNode* root) {
+        vector<string> result;
+        if (!root) return result;
+
+        // 从根节点开始搜索
+        dfs(root, "", result);
+        return result;
+    }
+    void dfs(TreeNode* cur, string currentPath, vector<string>& result)
+    {
+        if (currentPath.empty())
+        {
+            currentPath += to_string(cur->val);
+        }else{
+            currentPath += "->" + to_string(cur->val);
+        }
+        // 若当前路径为叶子节点，将路径加入结果
+        if (!cur->left && !cur->right)
+        {
+            result.push_back(currentPath);
+            return;
+        }
+
+        // 非叶子节点递归遍历左右子树
+        if (cur->left) dfs(cur->left, currentPath, result);
+
+        if (cur->right) dfs(cur->right, currentPath, result);
+
+        return;
+    }
+};
 
 
